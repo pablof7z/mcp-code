@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-import { registerFindUserCommand } from './find-user.js';
 import { registerFindSnippetsCommand } from './find-snippets.js';
 import { registerWotCommand } from './wot.js';
 import { registerListUsernamesCommand } from './list-usernames.js';
@@ -17,7 +16,6 @@ program
 
 // Register all commands
 registerMcpCommand(program);
-registerFindUserCommand(program);
 registerFindSnippetsCommand(program);
 registerWotCommand(program);
 registerListUsernamesCommand(program);

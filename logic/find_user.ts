@@ -1,44 +1,52 @@
 import { z } from "zod";
-import { ndk } from "../ndk.js";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { knownUsers } from "../users.js";
-import { queryUser } from "../users.js";
+import { toPubkeys, formatUser } from "../lib/converters/index.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 /**
  * Find a user by name, npub, or other profile information
- * @param query The search query to find a user
- * @returns Results with formatted user information
+ * @param query Search query to find a user
+ * @returns Formatted user data or error message
  */
-export async function findUser(query: string) {
+export async function findUser(query: string): Promise<{
+    content: Array<{ type: "text"; text: string }>;
+}> {
     try {
-        const pubkeys = queryUser(query);
+        // Convert the query to pubkeys
+        const pubkeys = toPubkeys(query);
 
         if (pubkeys.length === 0) {
             return {
                 content: [
                     {
-                        type: "text" as const,
-                        text: "No users found matching the query.",
+                        type: "text",
+                        text: `No users found matching: ${query}`,
                     },
                 ],
             };
         }
 
-        // Format the found users for display
+        // Format user data for each pubkey
         const formattedUsers = pubkeys.map(formatUser).join("\n\n---\n\n");
 
         return {
             content: [
                 {
-                    type: "text" as const,
-                    text: `Found ${pubkeys.length} users:\n\n${formattedUsers}`,
+                    type: "text",
+                    text: formattedUsers,
                 },
             ],
         };
     } catch (error: unknown) {
         const errorMessage =
             error instanceof Error ? error.message : String(error);
-        throw new Error(`Failed to find user: ${errorMessage}`);
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Error finding user: ${errorMessage}`,
+                },
+            ],
+        };
     }
 }
 
@@ -49,29 +57,7 @@ export function addFindUserCommand(server: McpServer) {
         {
             query: z.string().describe("The search query to find a user"),
         },
-        async ({ query }) => {
-            return findUser(query);
-        }
+        async ({ query }) => findUser(query)
     );
 }
 
-/**
- * Format user profile data for display
- * @param pubkey User public key
- * @returns Formatted string representation
- */
-function formatUser(pubkey: string): string {
-    const profile = knownUsers[pubkey]?.profile;
-    const user = ndk.getUser({ pubkey });
-    const keys: Record<string, string> = {
-        Npub: user.npub,
-    };
-
-    if (profile?.name) keys.Name = profile.name;
-    if (profile?.about) keys.About = profile.about;
-    if (profile?.picture) keys.Picture = profile.picture;
-
-    return Object.entries(keys)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join("\n");
-}

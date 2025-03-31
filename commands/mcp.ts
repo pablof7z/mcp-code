@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import type { Command } from 'commander';
 import { readConfig } from "../config.js";
 import { addCreatePubkeyCommand } from "../logic/create-pubkey.js";
 import { addFindSnippetsCommand } from "../logic/find_snippets.js";
@@ -6,6 +6,8 @@ import { addFindUserCommand } from "../logic/find_user.js";
 import { addListUsernamesCommand } from "../logic/list_usernames.js";
 import { addPublishCodeSnippetCommand } from "../logic/publish-code-snippet.js";
 import { addPublishCommand } from "../logic/publish.js";
+import { addListSnippetsCommand } from "../logic/list_snippets.js";
+import { addFetchSnippetByIdCommand } from "../logic/fetch_snippet_by_id.js";
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
@@ -20,6 +22,8 @@ const commandMap: Record<string, CommandFunction> = {
     "find-user": addFindUserCommand,
     "find-snippets": addFindSnippetsCommand,
     "list-usernames": addListUsernamesCommand,
+    "list-snippets": addListSnippetsCommand,
+    "fetch-snippet-by-id": addFetchSnippetByIdCommand,
 };
 
 // Global server instance
@@ -70,5 +74,7 @@ export function registerMcpCommands(server: McpServer) {
         addFindUserCommand(server);
         addFindSnippetsCommand(server);
         addListUsernamesCommand(server);
+        addListSnippetsCommand(server);
+        addFetchSnippetByIdCommand(server);
     }
 }

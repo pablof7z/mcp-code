@@ -2,15 +2,16 @@ import { NDKEvent } from "@nostr-dev-kit/ndk";
 import { z } from "zod";
 import { SNIPPET_KIND, getSigner } from "../lib/nostr/utils.js";
 import { ndk } from "../ndk.js";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir, tmpdir } from "node:os";
-import { readConfig, getUser } from "../config.js";
+import { readConfig } from "../config.js";
 import { existsSync } from "node:fs";
 import * as Bun from "bun";
+import { createMetadataString, parseMetadataFromString } from "../lib/converters/index.js";
 
-function log(message: string, ...args: any[]) {
+function log(message: string): void {
     // append to ~/.nmcp-nostr.log
     const logFilePath = join(homedir(), ".nmcp-nostr.log");
     const logMessage = `${new Date().toISOString()} - ${message}\n`;
@@ -134,25 +135,12 @@ export async function publishCodeSnippet(
     username?: string
 ): Promise<{ content: Array<{ type: "text", text: string }> }> {
     try {
-        // Validate minimum requirements
-        // if (tags.length < 5) {
-        //     throw new Error(
-        //         "Insufficient tags. At least 5 tags are required. Please add more relevant and accurate information."
-        //     );
-        // }
-
-        // if (description.length < 140) {
-        //     throw new Error(
-        //         "Description is too short. At least 140 characters are required. Please add more relevant and accurate information."
-        //     );
-        // }
-
         // put the code snippet in a temp file and run the command in config.editor or `code` and wait until it's closed -- then read the file and publish it
         const config = readConfig();
         const tempFilePath = join(tmpdir(), `snippet-${Date.now()}.${language}`);
 
         // Create file content with metadata section for editing
-        const fileContent = createFileWithMetadata(title, description, language, tags, code);
+        const fileContent = createMetadataString(title, description, language, tags, code);
 
         // Write the content to the temp file
         writeFileSync(tempFilePath, fileContent);
@@ -163,7 +151,7 @@ export async function publishCodeSnippet(
         // Spawn the editor process - first arg is the command array including both the command and its arguments
         const process = Bun.spawn([...editorCommand, tempFilePath]);
 
-        log("spawned editor process to edit " + tempFilePath);
+        log(`spawned editor process to edit ${tempFilePath}`);
 
         // Wait for the editor to close
         await process.exited;
@@ -178,21 +166,21 @@ export async function publishCodeSnippet(
         if (existsSync(tempFilePath)) {
             const updatedContent = readFileSync(tempFilePath, "utf-8");
             try {
-                log("updatedContent: " + updatedContent);
-                const parsed = parseMetadata(updatedContent);
+                log(`updatedContent: ${updatedContent}`);
+                const parsed = parseMetadataFromString(updatedContent);
                 updatedTitle = parsed.metadata.title || title;
                 updatedDescription = parsed.metadata.description || description;
                 updatedLanguage = parsed.metadata.language || language;
                 updatedTags = parsed.metadata.tags.length >= 5 ? parsed.metadata.tags : tags;
                 updatedCode = parsed.code;
             } catch (error) {
-                log("error " + error);
+                log(`error ${error}`);
                 console.error("Error parsing metadata:", error);
                 // Fallback to using the file content as just code if metadata parsing fails
                 updatedCode = updatedContent;
             }
         } else {
-            log("tempFilePath does not exist", tempFilePath);
+            log(`tempFilePath does not exist ${tempFilePath}`);
         }
 
         const eventTags = [

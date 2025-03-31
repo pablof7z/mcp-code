@@ -17,6 +17,7 @@ export interface FindSnippetsParams {
 export type CodeSnippet = {
     id: string;
     title: string;
+    description: string;
     code: string;
     language: string;
     pubkey: string;

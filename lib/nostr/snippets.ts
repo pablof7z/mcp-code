@@ -1,9 +1,9 @@
 import type { NDKEvent, NDKFilter } from "@nostr-dev-kit/ndk";
 import { ndk } from "../../ndk.js";
-import { knownUsers } from "../../users.js";
 import type { CodeSnippet, FindSnippetsParams } from "../types/index.js";
 import { log } from "../utils/log.js";
-import { SNIPPET_KIND, eventToSnippet, identifierToPubkeys } from "./utils.js";
+import { SNIPPET_KIND, identifierToPubkeys } from "./utils.js";
+import { formatPartialMatches, formatSnippets, toSnippet } from "../converters/index.js";
 
 /**
  * Get code snippets from Nostr events of kind 1337
@@ -87,50 +87,11 @@ export async function getSnippets(params: FindSnippetsParams = {}): Promise<{
     }
 
     // Convert events to snippets
-    const snippets = selectedEvents.map(eventToSnippet);
-    const otherSnippets = notSelectedEvents.map(eventToSnippet);
+    const snippets = selectedEvents.map(toSnippet);
+    const otherSnippets = notSelectedEvents.map(toSnippet);
 
     return { snippets, otherSnippets };
 }
 
-/**
- * Format snippets for display
- * @param snippets Array of code snippets
- * @returns Formatted string representation
- */
-export function formatSnippets(snippets: CodeSnippet[]): string {
-    return snippets
-        .map((snippet) => {
-            const author = knownUsers[snippet.pubkey];
-            const keys: Record<string, string> = {
-                Title: snippet.title,
-                Language: snippet.language,
-                Tags: snippet.tags.join(", "),
-                Code: snippet.code,
-            };
-            if (author?.profile?.name) keys.Author = author.profile.name;
-            return Object.entries(keys)
-                .map(([key, value]) => `${key}: ${value}`)
-                .join("\n");
-        })
-        .join("\n\n---\n\n");
-}
-
-/**
- * Format partial match snippets for display
- * @param snippets Array of code snippets
- * @returns Formatted string representation
- */
-export function formatPartialMatches(snippets: CodeSnippet[]): string {
-    if (snippets.length === 0) return "";
-
-    let text =
-        "\n\nSome other events not included in this result since they had less in common with your search, here is a list of the events that had partial matches:\n\n";
-    text += snippets
-        .map((snippet) => {
-            return ` * ${snippet.title}:\n   Tags: ${snippet.tags.join(", ")}`;
-        })
-        .join("\n");
-
-    return text;
-}
+// Re-export formatters for backward compatibility
+export { formatSnippets, formatPartialMatches };
