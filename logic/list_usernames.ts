@@ -55,12 +55,7 @@ export function addListUsernamesCommand(server: McpServer) {
     server.tool(
         "list_usernames",
         "List all available usernames in the system",
-        {
-            random_string: z
-                .string()
-                .optional()
-                .describe("Dummy parameter for no-parameter tools"),
-        },
+        { },
         async () => {
             return listUsernames();
         }

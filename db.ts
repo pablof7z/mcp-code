@@ -31,6 +31,7 @@ export const migrations: Migration[] = [
     // Example:
     // { name: '001_initial_schema', module: () => import('./migrations/001_initial_schema.js') },
     // Add all migrations here
+    { name: '003-create-snippets-table', module: () => import('./migrations/003-create-snippets-table.js') },
 ];
 
 /**

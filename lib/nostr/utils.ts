@@ -6,6 +6,10 @@ import { toPubkeys, toSnippet } from "../converters/index.js";
 
 export const SNIPPET_KIND = 1337;
 
+export function getUsernameFromPubkey(pubkey: string): string | null {
+    
+}
+
 /**
  * Gets the appropriate signer based on the username
  * @param username Username to get signer for (or "main" for default)

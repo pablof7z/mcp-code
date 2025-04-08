@@ -4,6 +4,7 @@ import { registerWotCommand } from './wot.js';
 import { registerListUsernamesCommand } from './list-usernames.js';
 import { registerMcpCommand } from './mcp.js';
 import { registerSetupCommand } from './setup.js';
+import { registerZapCommand } from './zap.js';
 
 // Create a new Commander program
 const program = new Command();
@@ -20,6 +21,7 @@ registerFindSnippetsCommand(program);
 registerWotCommand(program);
 registerListUsernamesCommand(program);
 registerSetupCommand(program);
+registerZapCommand(program);
 
 // Function to run the CLI
 export async function runCli(args: string[]) {

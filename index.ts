@@ -2,7 +2,10 @@ import { initConfig, readConfig, writeConfig } from "./config.js";
 import { initNDK, ndk } from "./ndk.js";
 import "./db.js";
 import { runCli } from "./commands/index.js";
+import { log } from "./lib/utils/log.js";
 import { runConfigWizard } from "./wizard";
+
+log("starting up...: args: " + process.argv.join(" "));
 
 // Load config and ensure defaults
 const config = initConfig();
@@ -10,9 +13,9 @@ const config = initConfig();
 // If there's no privateKey or bunker configured, run the setup wizard
 if (!config.privateKey && !config.bunker) {
     const updatedConfig = await runConfigWizard(config);
-    await initNDK(updatedConfig);
+    initNDK(updatedConfig);
 } else {
-    await initNDK(config);
+    initNDK(config);
 }
 
 // Process command-line arguments

@@ -1,15 +1,18 @@
-import type { Command } from 'commander';
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import type { Command } from "commander";
 import { readConfig } from "../config.js";
 import { addCreatePubkeyCommand } from "../logic/create-pubkey.js";
+import { addFetchSnippetByIdCommand } from "../logic/fetch_snippet_by_id.js";
 import { addFindSnippetsCommand } from "../logic/find_snippets.js";
 import { addFindUserCommand } from "../logic/find_user.js";
+import { addListSnippetsCommand } from "../logic/list_snippets.js";
 import { addListUsernamesCommand } from "../logic/list_usernames.js";
 import { addPublishCodeSnippetCommand } from "../logic/publish-code-snippet.js";
 import { addPublishCommand } from "../logic/publish.js";
-import { addListSnippetsCommand } from "../logic/list_snippets.js";
-import { addFetchSnippetByIdCommand } from "../logic/fetch_snippet_by_id.js";
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { addWalletBalanceCommand } from "../logic/wallet-balance.js";
+import { addZapCommand } from "../logic/zap.js";
+import { log } from "../utils/log.js";
 
 // Define type for command functions
 type CommandFunction = (server: McpServer) => void;
@@ -24,27 +27,32 @@ const commandMap: Record<string, CommandFunction> = {
     "list-usernames": addListUsernamesCommand,
     "list-snippets": addListSnippetsCommand,
     "fetch-snippet-by-id": addFetchSnippetByIdCommand,
+    zap: addZapCommand,
+    "wallet-balance": addWalletBalanceCommand,
 };
 
 // Global server instance
-let mcpServer: McpServer | null = null;
+const mcpServer = new McpServer({
+    name: "Nostr Publisher",
+    version: "1.0.0",
+    capabilities: {
+        resources: {},
+    },
+});
 
 export function registerMcpCommand(program: Command): void {
     program
-        .command('mcp')
-        .description('Start the MCP server')
+        .command("mcp")
+        .description("Start the MCP server")
         .action(async () => {
             try {
                 // Create the MCP server
-                mcpServer = new McpServer({
-                    name: "Nostr Publisher",
-                    version: "1.0.0",
-                });
 
                 // Register all MCP commands
                 registerMcpCommands(mcpServer);
 
                 // Connect the server to the transport
+                log("Starting MCP server...");
                 const transport = new StdioServerTransport();
                 await mcpServer.connect(transport);
             } catch (error) {
@@ -76,5 +84,7 @@ export function registerMcpCommands(server: McpServer) {
         addListUsernamesCommand(server);
         addListSnippetsCommand(server);
         addFetchSnippetByIdCommand(server);
+        addZapCommand(server);
+        addWalletBalanceCommand(server);
     }
 }

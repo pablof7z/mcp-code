@@ -22,9 +22,7 @@ export async function initNDK(config: ConfigData) {
 
     let signer: NDKSigner;
 
-    if (config.privateKey) {
-        signer = new NDKPrivateKeySigner(config.privateKey);
-    } else if (config.bunker) {
+    if (config.bunker) {
         let localSigner: NDKPrivateKeySigner;
         if (config.bunkerLocalKey) {
             localSigner = new NDKPrivateKeySigner(config.bunkerLocalKey);
@@ -38,6 +36,8 @@ export async function initNDK(config: ConfigData) {
 
         signer = new NDKNip46Signer(ndk, config.bunker, localSigner);
         await signer.blockUntilReady();
+    } else if (config.privateKey) {
+        signer = new NDKPrivateKeySigner(config.privateKey);
     } else {
         throw new Error("No private key or bunker provided");
     }

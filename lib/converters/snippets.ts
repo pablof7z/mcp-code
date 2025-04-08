@@ -70,10 +70,13 @@ export function formatSnippets(snippets: CodeSnippet[]): string {
         .map((snippet) => {
             const author = knownUsers[snippet.pubkey];
             const keys: Record<string, string> = {
+                ID: snippet.id,
                 Title: snippet.title,
+                Description: snippet.description,
                 Language: snippet.language,
                 Tags: snippet.tags.join(", "),
                 Code: snippet.code,
+                Date: new Date(snippet.createdAt * 1000).toISOString(),
             };
             if (author?.profile?.name) keys.Author = author.profile.name;
             return Object.entries(keys)
@@ -95,7 +98,7 @@ export function formatPartialMatches(snippets: CodeSnippet[]): string {
         "\n\nSome other events not included in this result since they had less in common with your search, here is a list of the events that had partial matches:\n\n";
     text += snippets
         .map((snippet) => {
-            return ` * ${snippet.title}:\n   Tags: ${snippet.tags.join(", ")}`;
+            return ` * ${snippet.title}:\n   Tags: ${snippet.tags.join(", ")} (ID: ${snippet.id})`;
         })
         .join("\n");
 
