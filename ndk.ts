@@ -2,10 +2,12 @@ import NDK, {
     NDKPrivateKeySigner,
     type NDKUser,
     type NDKSigner,
+    type NDKRelay,
 } from "@nostr-dev-kit/ndk";
 import { NDKNip46Signer } from "@nostr-dev-kit/ndk";
 import { type ConfigData, writeConfig } from "./config";
 import { updateFollowList } from "./update-follow-list";
+import { log } from "./utils/log";
 
 const DEFAULT_RELAYS = [
     "wss://relay.primal.net",
@@ -18,6 +20,13 @@ export const ndk = new NDK();
 
 export async function initNDK(config: ConfigData) {
     ndk.explicitRelayUrls = config.relays || DEFAULT_RELAYS;
+    ndk.pool.on("relay:connect", (r: NDKRelay) => log(`Connected to ${r.url}`));
+    ndk.pool.on("relay:disconnect", (r: NDKRelay) =>
+        log(`Disconnected from ${r.url}`)
+    );
+    ndk.pool.on("relay:connecting", (r: NDKRelay) =>
+        log(`Connecting to ${r.url}`)
+    );
     await ndk.connect();
 
     let signer: NDKSigner;
@@ -53,5 +62,5 @@ export async function initNDK(config: ConfigData) {
 
     mainUser ??= await signer.user();
 
-    setTimeout(() => updateFollowList(mainUser), 1000);
+    // setTimeout(() => updateFollowList(mainUser), 1000);
 }

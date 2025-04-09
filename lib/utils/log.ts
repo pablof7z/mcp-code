@@ -1,8 +1,8 @@
 import * as fs from "node:fs";
-import { promises as fsPromises } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 
+const id = Math.floor(Math.random() * 1000000);
 const timeZero = Date.now();
 
 /**
@@ -21,7 +21,7 @@ export function log(
     const now = new Date();
     const timestamp = new Date().toISOString();
     const relativeTime = now.getTime() - timeZero;
-    const logMessage = `[${relativeTime}ms] ${timestamp} - ${message}\n`;
+    const logMessage = `[${id}] [${relativeTime}ms] ${timestamp} - ${message}\n`;
     fs.appendFile(logFilePath, logMessage, (err) => {
         if (err) {
             console.error("Error writing to log file:", err);

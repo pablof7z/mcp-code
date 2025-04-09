@@ -1,10 +1,14 @@
 import type { NDKEvent, NDKFilter } from "@nostr-dev-kit/ndk";
 import { db } from "../../db.js";
 import { ndk } from "../../ndk.js";
+import {
+    formatPartialMatches,
+    formatSnippets,
+    toSnippet,
+} from "../converters/index.js";
 import type { CodeSnippet, FindSnippetsParams } from "../types/index.js";
 import { log } from "../utils/log.js";
 import { SNIPPET_KIND, identifierToPubkeys } from "./utils.js";
-import { formatPartialMatches, formatSnippets, toSnippet } from "../converters/index.js";
 
 /**
  * Get code snippets from Nostr events of kind 1337
@@ -54,6 +58,19 @@ export async function getSnippets(params: FindSnippetsParams = {}): Promise<{
 
     log(`Fetching snippets with filter: ${JSON.stringify(filter, null, 2)}`);
 
+    // ndk.subscribe(
+    //     [filter],
+    //     { closeOnEose: true },
+    //     {
+    //         onEvent: (event) => {
+    //             log(`Received event: ${event.id}`);
+    //         },
+    //         onEose: () => {
+    //             log("EOSE received.");
+    //         },
+    //     }
+    // );
+
     // Fetch events
     const events = await ndk.fetchEvents(filter);
 
@@ -73,8 +90,11 @@ export async function getSnippets(params: FindSnippetsParams = {}): Promise<{
             .filter((t): t is string => t !== undefined); // Ensure tag value exists and narrow type
 
         // Count how many of the searched tags are present in the event's tags
-        return params.tags.filter((searchTag) =>
-            aTags.some((eventTag) => eventTag.match(new RegExp(searchTag, "i"))) // Case-insensitive tag matching
+        return params.tags.filter(
+            (searchTag) =>
+                aTags.some((eventTag) =>
+                    eventTag.match(new RegExp(searchTag, "i"))
+                ) // Case-insensitive tag matching
         ).length;
     }
 
@@ -97,7 +117,6 @@ export async function getSnippets(params: FindSnippetsParams = {}): Promise<{
     // Convert events to snippets
     const snippets = selectedEvents.map(toSnippet);
     const otherSnippets = notSelectedEvents.map(toSnippet);
-
 
     // --- BEGIN DATABASE INSERTION ---
     const allSnippets = [...snippets, ...otherSnippets];

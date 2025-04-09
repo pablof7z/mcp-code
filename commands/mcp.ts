@@ -3,6 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import type { Command } from "commander";
 import { readConfig } from "../config.js";
 import { addCreatePubkeyCommand } from "../logic/create-pubkey.js";
+import { addDepositCommand } from "../logic/deposit.js";
 import { addFetchSnippetByIdCommand } from "../logic/fetch_snippet_by_id.js";
 import { addFindSnippetsCommand } from "../logic/find_snippets.js";
 import { addFindUserCommand } from "../logic/find_user.js";
@@ -29,6 +30,7 @@ const commandMap: Record<string, CommandFunction> = {
     "fetch-snippet-by-id": addFetchSnippetByIdCommand,
     zap: addZapCommand,
     "wallet-balance": addWalletBalanceCommand,
+    deposit: addDepositCommand,
 };
 
 // Global server instance
@@ -87,4 +89,5 @@ export function registerMcpCommands(server: McpServer) {
         addZapCommand(server);
         addWalletBalanceCommand(server);
     }
+    addDepositCommand(server);
 }

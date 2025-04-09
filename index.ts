@@ -2,8 +2,11 @@ import { initConfig, readConfig, writeConfig } from "./config.js";
 import { initNDK, ndk } from "./ndk.js";
 import "./db.js";
 import { runCli } from "./commands/index.js";
+import { applyMigrations } from "./db.js";
 import { log } from "./lib/utils/log.js";
 import { runConfigWizard } from "./wizard";
+
+await applyMigrations();
 
 log("starting up...: args: " + process.argv.join(" "));
 
