@@ -1,12 +1,10 @@
-import NDK, { NDKPrivateKeySigner, NDKUser, NDKEvent } from "@nostr-dev-kit/ndk";
-import { NDKCashuWallet } from "@nostr-dev-kit/ndk-wallet";
-import { NDKCashuMintList } from "@nostr-dev-kit/ndk";
-import { getWallet } from "../lib/cache/wallets.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { NDKEvent, NDKPrivateKeySigner } from "@nostr-dev-kit/ndk";
 import { z } from "zod";
 import { getUser, saveUser } from "../config.js";
+import { getWallet } from "../lib/cache/wallets.js";
 import { log } from "../lib/utils/log.js";
 import { ndk } from "../ndk.js";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 export async function createPubkey({
     username,
@@ -32,6 +30,7 @@ export async function createPubkey({
             display_name,
             name: display_name,
             about: about || "",
+            picture: `https://robohash.org/${username}`,
         });
 
         // Create the event
@@ -47,23 +46,25 @@ export async function createPubkey({
         // Publish the event
         await event.publish();
 
-
         // --- Setup Cashu Wallet (NIP-60/NIP-61) ---
         log(`Setting up Cashu wallet for ${username}...`);
 
         try {
             // Use getWallet to retrieve or create a wallet for the new pubkey
-            const wallet = await getWallet(signer.pubkey);
-            
+            const wallet = await getWallet(signer.pubkey, signer);
+
             if (wallet) {
                 log(`Cashu wallet setup complete for ${username}.`);
                 log(` -> P2PK: ${wallet.p2pk}`);
-                log(` -> Mints: ${wallet.mints.join(', ')}`);
+                log(` -> Mints: ${wallet.mints.join(", ")}`);
             } else {
                 throw new Error("Failed to create wallet");
             }
         } catch (walletError) {
-            console.error(`Failed to set up Cashu wallet for ${username}:`, walletError);
+            console.error(
+                `Failed to set up Cashu wallet for ${username}:`,
+                walletError
+            );
             // Decide if this should be a fatal error for pubkey creation
             // For now, log the error and continue
         }
