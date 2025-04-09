@@ -72,7 +72,9 @@ export async function loadKnownUsers(): Promise<void> {
 
 // Initialize the cache
 if (!Object.keys(knownUsers).length) {
-    await loadKnownUsers();
+    try {
+        await loadKnownUsers();
+    } catch {}
 }
 
 /**
