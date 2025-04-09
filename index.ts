@@ -12,6 +12,7 @@ log("starting up...: args: " + process.argv.join(" "));
 
 // Load config and ensure defaults
 const config = initConfig();
+``;
 
 // If there's no privateKey or bunker configured, run the setup wizard
 if (!config.privateKey && !config.bunker) {
