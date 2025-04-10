@@ -53,12 +53,19 @@ bun run build
 
 ## Usage
 
+### Setup
+
+For the initial setup run
+```bash
+./mcp-code setup
+```
+
 ### As an MCP Server
 
 Run without arguments to start the MCP server mode, which listens for MCP protocol messages on stdin and responds on stdout:
 
 ```bash
-./mcp-code
+./mcp-code mcp
 ```
 
 ### CLI Commands
@@ -88,14 +95,6 @@ bun run format
 # Check and fix issues
 bun run check
 ```
-
-## Dependencies
-
-- [@modelcontextprotocol/sdk](https://github.com/model-context-protocol/sdk) - SDK for the Model Context Protocol
-- [@nostr-dev-kit/ndk](https://github.com/nostr-dev-kit/ndk) - Nostr Development Kit
-- [@nostr-dev-kit/ndk-wallet](https://github.com/nostr-dev-kit/ndk-wallet) - Wallet integration for NOSTR
-- [commander](https://github.com/tj/commander.js) - Command-line interface framework
-- [yaml](https://github.com/eemeli/yaml) - YAML parsing and serialization
 
 ## License
 
