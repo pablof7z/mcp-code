@@ -15,18 +15,13 @@ Long running tasks merit their own nostr identities.
 For example, if you have a complex task to accomplish over many days, you can tell the agent to create a nostr pubkey, give it a username, perhaps give it money (with the `deposit` command) if it might need to buy things.
 
 
-```
-We need to refactor this piece of code, create a new pubkey for yourself, your name will be "Refactoring Agent", and give me a QR code to deposit 1000 sats in your wallet. Tell me your npub so I can follow you on nostr.
-```
+> We need to refactor this piece of code, create a new pubkey for yourself, your name will be "Refactoring Agent", and give me a QR code to deposit 1000 sats in your wallet. Tell me your npub so I can follow you on nostr.
 
 Let the agent run, give it some money...
 
 You can instruct the agent to publish frequent updates to nostr and to wait for feedback from you and from some people you choose. Names are resolved via your own WoT.
 
-```
-Now let's refactor <x>, whenever you have a significant update, publish it on nostr and wait for my feedback before proceeding. Gigi is helping me with this so if he gives you feedback also pay attention to it.
-```
-
+> Now let's refactor <x>, whenever you have a significant update, publish it on nostr and wait for my feedback before proceeding. Gigi is helping me with this so if he gives you feedback also pay attention to it.
 
 ## Features
 
