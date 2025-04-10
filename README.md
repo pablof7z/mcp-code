@@ -1,6 +1,32 @@
-# MCP-NOSTR: Nostr Publisher for Model Context Protocol
+# MCP-NOSTR: Nostr augmentation of agents via Model Context Protocol
 
-A bridge between the Model Context Protocol (MCP) and the Nostr network, enabling AI language models to publish content to Nostr.
+A bridge between the Model Context Protocol (MCP) and Nostr, enabling AI language models to leverage nostr for discovery, augmentation, reporting, money and more.
+
+## Value Prop
+
+### Code Snippets: Improve code quality
+Code snippets provide WoT-weighted access to code snippets that show LLMs how to di a *specific* task in the right way. This can take generic, non-performant vibecode into perform well.
+
+Whenever you notice an LLM makes a mistake, fix it manually, and publish a code snippet that teaches the LLM to do the thing in a certain way. Write code snippets in LLM-friendly ways.
+
+### Agent interaction
+Long running tasks merit their own nostr identities.
+
+For example, if you have a complex task to accomplish over many days, you can tell the agent to create a nostr pubkey, give it a username, perhaps give it money (with the `deposit` command) if it might need to buy things.
+
+
+```
+We need to refactor this piece of code, create a new pubkey for yourself, your name will be "Refactoring Agent", and give me a QR code to deposit 1000 sats in your wallet. Tell me your npub so I can follow you on nostr.
+```
+
+Let the agent run, give it some money...
+
+You can instruct the agent to publish frequent updates to nostr and to wait for feedback from you and from some people you choose. Names are resolved via your own WoT.
+
+```
+Now let's refactor <x>, whenever you have a significant update, publish it on nostr and wait for my feedback before proceeding. Gigi is helping me with this so if he gives you feedback also pay attention to it.
+```
+
 
 ## Features
 
@@ -20,8 +46,8 @@ bunx mcp-code mcp
 
 ```bash
 # Clone the repository
-git clone https://github.com/pablof7z/mcp-nostr.git
-cd mcp-nostr
+git clone https://github.com/pablof7z/mcp-code.git
+cd mcp-code
 
 # Install dependencies
 bun install
