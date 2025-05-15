@@ -1,5 +1,6 @@
 import type { NDKEvent, NDKFilter } from "@nostr-dev-kit/ndk";
 import { db } from "../../db.js";
+import type { Database, Statement } from "../../types.js";
 import { ndk } from "../../ndk.js";
 import {
     formatPartialMatches,

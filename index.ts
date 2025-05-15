@@ -1,10 +1,11 @@
+#!/usr/bin/env node
 import { initConfig, readConfig, writeConfig } from "./config.js";
 import { initNDK, ndk } from "./ndk.js";
 import "./db.js";
 import { runCli } from "./commands/index.js";
 import { applyMigrations } from "./db.js";
 import { log } from "./lib/utils/log.js";
-import { runConfigWizard } from "./wizard";
+import { runConfigWizard } from "./wizard.js";
 
 await applyMigrations();
 
@@ -16,8 +17,8 @@ const config = initConfig();
 
 // If there's no privateKey or bunker configured, run the setup wizard
 if (!config.privateKey && !config.bunker) {
+    initNDK();
     const updatedConfig = await runConfigWizard(config);
-    initNDK(updatedConfig);
 } else {
     initNDK(config);
 }

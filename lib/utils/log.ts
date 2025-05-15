@@ -12,7 +12,7 @@ const timeZero = Date.now();
  */
 export function log(
     message: string,
-    logFilePath: string = path.join(os.homedir(), ".mcp-code23.log")
+    logFilePath: string = path.join(os.homedir(), ".tenex-tools.log")
 ): void {
     // Ensure the directory exists
     const logDir = path.dirname(logFilePath);

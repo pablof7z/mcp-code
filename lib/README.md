@@ -1,4 +1,4 @@
-# MCP-NDK Library Structure
+# tenex-tools Library Structure
 
 This directory contains reusable code organized into modules to reduce duplication and improve maintainability.
 

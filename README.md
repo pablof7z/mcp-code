@@ -1,101 +1,128 @@
-# MCP-NOSTR: Nostr augmentation of agents via Model Context Protocol
+# tenex-tools
 
-A bridge between the Model Context Protocol (MCP) and Nostr, enabling AI language models to leverage nostr for discovery, augmentation, reporting, money and more.
+Share, discover, and integrate LLM coding instructions & code snippets to supercharge your AI coding agents.
 
-## Value Prop
+## 🚀 Overview
 
-### Code Snippets: Improve code quality
-Code snippets provide WoT-weighted access to code snippets that show LLMs how to di a *specific* task in the right way. This can take generic, non-performant vibecode into perform well.
+As AI-powered coding assistants become a staple in development workflows, the key to unlocking their full potential is guiding them with precise, battle-tested instructions and code recipes. **tenex-tools** provides a collaborative registry and CLI for publishing, finding, and integrating:
 
-Whenever you notice an LLM makes a mistake, fix it manually, and publish a code snippet that teaches the LLM to do the thing in a certain way. Write code snippets in LLM-friendly ways.
+- **Micro-Instructions**: Turn common coding tasks into LLM-friendly step-by-step guides.  
+- **Code Snippets**: Share reusable code patterns that dramatically reduce errors and improve quality.  
+- **Agent Profiles**: Define custom agent personas and workflows to automate complex tasks.  
 
-### Agent interaction
-Long running tasks merit their own nostr identities.
+By tapping into a community-driven marketplace of LLM assets, you can radically improve the performance, reliability, and consistency of your AI coding agents.
 
-For example, if you have a complex task to accomplish over many days, you can tell the agent to create a nostr pubkey, give it a username, perhaps give it money (with the `deposit` command) if it might need to buy things.
+---
+
+## ⭐ Key Benefits
+
+- **Accelerate Agent Accuracy**: Snippets and instructions sharpen an LLM’s focus on your coding conventions and best practices.  
+- **Collaborative Growth**: Publish your own assets, build your reputation, and leverage community contributions.  
+- **Plug & Play**: Seamlessly integrate with any MCP-compatible agent or workflow.  
+- **Search & Discover**: Find the exact snippet or workflow you need with rich filtering by tags, languages, and authors.  
+
+---
+
+## 🔧 Features
+
+- **Publish & Retrieve Instructions**  
+  `tenex-tools instructions find <query>`  
+  `tenex-tools instructions publish <file>`
+- **Search & Fetch Code Snippets**  
+  `tenex-tools find-snippets [--limit <n>] [--languages <list>] [--tags <list>] [--authors <list>]`
+- **Manage Custom Agent Profiles**  
+  `tenex-tools agent find <query>`  
+  `tenex-tools agent get <eventId> --roo [path]`  
+  `tenex-tools agent publish <.roomodes path>`
+- **One-time Setup Wizard**  
+  `tenex-tools setup`
+- **Advanced MCP Mode**
+  `tenex-tools mcp`
+
+---
 
 
-> We need to refactor this piece of code, create a new pubkey for yourself, your name will be "Refactoring Agent", and give me a QR code to deposit 1000 sats in your wallet. Tell me your npub so I can follow you on nostr.
+## 💡 Use Cases
 
-Let the agent run, give it some money...
+- Generate robust unit tests with curated TDD snippets  
+- Automate refactoring workflows with step-by-step instructions  
+- Create domain-specific agent personas (e.g., Security Auditor, Performance Tuner)  
+- Share best practices across teams and projects  
 
-You can instruct the agent to publish frequent updates to nostr and to wait for feedback from you and from some people you choose. Names are resolved via your own WoT.
+---
 
-> Now let's refactor <x>, whenever you have a significant update, publish it on nostr and wait for my feedback before proceeding. Gigi is helping me with this so if he gives you feedback also pay attention to it.
+## 🚀 Getting Started
 
-## Features
+1. **Install tenex-tools**
+   ```bash
+   bun install
+   ```
 
-- Implements the Model Context Protocol for interacting with AI language models
-- Provides CLI commands for managing Nostr identities, profiles, and content
-- Publishes AI-generated content to the Nostr network
-- Supports Web of Trust (WoT) for verified connections
-- Manages user profiles and follows
+   > **Note:** If you want to use tenex-tools globally, you can link it after building:
+   > ```bash
+   > bun run build
+   > bun link
+   > ```
 
-## Installation
+2. **Run the setup wizard**
+   ```bash
+   bun run index.ts setup
+   ```
 
+### **Find and install a code snippet**  
+   ```bash
+   tenex-tools find-snippets --limit 5 --languages javascript,python --tags testing
+   ```
+
+### **Discover agent workflows**  
+   ```bash
+   tenex-tools agent find "refactor"
+   ```
+
+### **Fetch and save an instruction set**  
+   ```bash
+   tenex-tools instructions find "optimize imports" --out .roo/rules-code/
+   ```
+
+---
+
+## 📖 CLI Reference
+
+**Setup**  
 ```bash
-bunx mcp-code mcp
-```
+tenex-tools setup
+```  
 
-### From source
-
+**Find Snippets**  
 ```bash
-# Clone the repository
-git clone https://github.com/pablof7z/mcp-code.git
-cd mcp-code
+tenex-tools find-snippets [--limit <n>] [--languages <list>] [--tags <list>] [--authors <list>]
+```  
 
-# Install dependencies
-bun install
-
-# Build the executable
-bun run build
-```
-
-## Usage
-
-### Setup
-
-For the initial setup run
+**Instructions**  
 ```bash
-./mcp-code setup
-```
+tenex-tools instructions find <query> [--out <path>]
+tenex-tools instructions publish <file>
+```  
 
-### As an MCP Server
-
-Run without arguments to start the MCP server mode, which listens for MCP protocol messages on stdin and responds on stdout:
-
+**Agents**  
 ```bash
-./mcp-code mcp
-```
+tenex-tools agent find <query>
+tenex-tools agent get <eventId> --roo [path]
+tenex-tools agent publish <.roomodes path>
+```  
 
-### CLI Commands
+---
 
-The tool also provides various command-line utilities for managing Nostr profiles and content:
+## 🤝 Contributing
 
-```bash
-# See available commands
-./mcp-code --help
-```
+We welcome new snippets, instructions, and agent profiles! To contribute:
 
-## Configuration
+1. Fork this repo and clone.  
+2. Add your assets under `assets/`, or publish directly with the CLI.  
+3. Submit a PR or share your contributions via the community registry.  
 
-Configuration is stored in `~/.mcp-nostr.json`:
+---
 
-
-
-## Development
-
-```bash
-# Run linting
-bun run lint
-
-# Format code
-bun run format
-
-# Check and fix issues
-bun run check
-```
-
-## License
+## 📜 License
 
 MIT

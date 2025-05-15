@@ -1,4 +1,6 @@
-import { describe, test, expect } from "bun:test";
+// @vitest-environment node
+import { describe, test, expect } from "vitest";
+// Type declarations are now in types.ts
 import { parseMetadata, createFileWithMetadata } from "../logic/publish-code-snippet";
 
 describe("Metadata Parser Tests", () => {

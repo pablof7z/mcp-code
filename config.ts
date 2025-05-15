@@ -28,7 +28,7 @@ export interface ConfigData {
 }
 
 // Path to the config file
-const CONFIG_PATH = join(homedir(), ".mcp-nostr.json");
+const CONFIG_PATH = join(homedir(), ".tenex-tools.json");
 
 /**
  * Read the config file and parse its contents
@@ -108,7 +108,7 @@ export function initConfig(): ConfigData {
     const config = readConfig();
 
     if (!config.dbPath) {
-        config.dbPath = join(homedir(), ".mcp-nostr.db");
+        config.dbPath = join(homedir(), ".tenex-tools.db");
         writeConfig(config);
     }
 

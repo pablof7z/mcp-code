@@ -1,21 +1,17 @@
-import type { Database } from "bun:sqlite";
+import type { Database } from "better-sqlite3";
 
 export const up = async (db: Database) => {
-    db.run(`
+    db.exec(`
         CREATE TABLE IF NOT EXISTS wot (
             follower TEXT NOT NULL,
             followed TEXT NOT NULL,
             PRIMARY KEY (follower, followed)
-        )
-    `);
-
-    // Create index for faster lookup by followed pubkey
-    db.run(`
+        );
         CREATE INDEX IF NOT EXISTS idx_wot_followed
-        ON wot (followed)
+        ON wot (followed);
     `);
 };
 
 export const down = async (db: Database) => {
-    db.run("DROP TABLE IF EXISTS wot");
+    db.exec("DROP TABLE IF EXISTS wot");
 };

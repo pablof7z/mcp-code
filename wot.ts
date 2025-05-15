@@ -1,4 +1,5 @@
 import { db } from "./db.js";
+import type { Database, Statement } from "./types.js";
 
 /**
  * Add follows for a given follower
@@ -17,7 +18,7 @@ export function addFollows(follower: string, followed: string[]): void {
         }
     })();
 
-    stmt.finalize();
+    // No finalize() needed for better-sqlite3
 }
 
 /**
@@ -27,7 +28,7 @@ export function addFollows(follower: string, followed: string[]): void {
  */
 export function getFollowerCount(pubkey: string): number {
     const result = db
-        .query(
+        .prepare(
             "SELECT COUNT(DISTINCT follower) as count FROM wot WHERE followed = ?"
         )
         .get(pubkey) as { count: number };
@@ -42,7 +43,7 @@ export function getFollowerCount(pubkey: string): number {
  */
 export function getFollowers(pubkey: string): string[] {
     const results = db
-        .query("SELECT DISTINCT follower FROM wot WHERE followed = ?")
+        .prepare("SELECT DISTINCT follower FROM wot WHERE followed = ?")
         .all(pubkey) as { follower: string }[];
 
     return results.map((row) => row.follower);
@@ -55,7 +56,7 @@ export function getFollowers(pubkey: string): string[] {
  */
 export function getFollowing(pubkey: string): string[] {
     const results = db
-        .query("SELECT DISTINCT followed FROM wot WHERE follower = ?")
+        .prepare("SELECT DISTINCT followed FROM wot WHERE follower = ?")
         .all(pubkey) as { followed: string }[];
 
     return results.map((row) => row.followed);
@@ -67,8 +68,6 @@ export function getFollowing(pubkey: string): string[] {
  * @param followed The followed pubkey
  */
 export function removeFollow(follower: string, followed: string): void {
-    db.run("DELETE FROM wot WHERE follower = ? AND followed = ?", [
-        follower,
-        followed,
-    ]);
+    db.prepare("DELETE FROM wot WHERE follower = ? AND followed = ?")
+        .run(follower, followed);
 }

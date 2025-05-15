@@ -59,13 +59,13 @@ export function registerWotCommand(program: Command): void {
                 // Most popular followers (if any)
                 if (followerCount > 0) {
                     const popularFollowers = db
-                        .query(`
-                        SELECT f.follower, COUNT(*) as count 
-                        FROM wot f 
-                        JOIN wot f2 ON f.follower = f2.followed 
+                        .prepare(`
+                        SELECT f.follower, COUNT(*) as count
+                        FROM wot f
+                        JOIN wot f2 ON f.follower = f2.followed
                         WHERE f.followed = ?
-                        GROUP BY f.follower 
-                        ORDER BY count DESC 
+                        GROUP BY f.follower
+                        ORDER BY count DESC
                         LIMIT 5
                     `)
                         .all(hexPubkey) as { follower: string; count: number }[];

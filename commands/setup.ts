@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { runConfigWizard } from "../wizard";
+import { runConfigWizard } from "../wizard.js";
 import { readConfig } from "../config.js";
 
 /**
@@ -9,10 +9,10 @@ import { readConfig } from "../config.js";
 export function registerSetupCommand(program: Command) {
     program
         .command("setup")
-        .description("Run the configuration wizard to set up MCP-Nostr")
+        .description("Run the configuration wizard to set up tenex-tools")
         .action(async () => {
             const config = readConfig();
             await runConfigWizard(config);
-            console.log("Setup complete! You can now use MCP-Nostr.");
+            process.exit(0);
         });
-} 
+}

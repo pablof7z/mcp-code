@@ -1,5 +1,6 @@
 import type { NDKUserProfile } from "@nostr-dev-kit/ndk";
 import { db } from "./db.js";
+import type { Database } from "./types.js";
 import type { UserEntry } from "./lib/types/index.js";
 import { log } from "./lib/utils/log.js";
 
@@ -21,15 +22,14 @@ export function saveUserProfile(
     knownUsers[pubkey] = { profile, data };
 
     // Save to database
-    db.run(
-        `INSERT INTO profiles (pubkey, profile, data) 
+    db.prepare(
+        `INSERT INTO profiles (pubkey, profile, data)
          VALUES (?, ?, ?)
-         ON CONFLICT(pubkey) DO UPDATE SET 
+         ON CONFLICT(pubkey) DO UPDATE SET
          profile = excluded.profile,
          data = excluded.data,
-         updated_at = CURRENT_TIMESTAMP`,
-        [pubkey, JSON.stringify(profile), data]
-    );
+         updated_at = CURRENT_TIMESTAMP`
+    ).run(pubkey, JSON.stringify(profile), data);
 }
 
 /**
@@ -49,7 +49,7 @@ export async function saveKnownUsers(): Promise<void> {
  */
 export async function loadKnownUsers(): Promise<void> {
     const results = db
-        .query("SELECT pubkey, profile, data FROM profiles")
+        .prepare("SELECT pubkey, profile, data FROM profiles")
         .all() as {
         pubkey: string;
         profile: string;
@@ -96,7 +96,7 @@ export function queryUser(query: string): string[] {
 
     // Fall back to database search if not found in cache
     const dbResults = db
-        .query("SELECT pubkey FROM profiles WHERE data LIKE ?")
+        .prepare("SELECT pubkey FROM profiles WHERE data LIKE ?")
         .all(`%${lower}%`) as { pubkey: string }[];
 
     return dbResults.map((row) => row.pubkey);

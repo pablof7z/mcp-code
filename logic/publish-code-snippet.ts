@@ -8,12 +8,12 @@ import { join } from "node:path";
 import { homedir, tmpdir } from "node:os";
 import { readConfig } from "../config.js";
 import { existsSync } from "node:fs";
-import * as Bun from "bun";
+import { spawn } from "child_process";
 import { createMetadataString, parseMetadataFromString } from "../lib/converters/index.js";
 
 function log(message: string): void {
-    // append to ~/.nmcp-nostr.log
-    const logFilePath = join(homedir(), ".nmcp-nostr.log");
+    // append to ~/.ntenex-tools.log
+    const logFilePath = join(homedir(), ".ntenex-tools.log");
     const logMessage = `${new Date().toISOString()} - ${message}\n`;
     writeFileSync(logFilePath, logMessage, { flag: "a" });
 }
@@ -148,13 +148,23 @@ export async function publishCodeSnippet(
         // Use the editor specified in config, or default to 'code' (VS Code)
         const editorCommand = (config.editor || 'code --wait').split(' ');
 
-        // Spawn the editor process - first arg is the command array including both the command and its arguments
-        const process = Bun.spawn([...editorCommand, tempFilePath]);
-
-        log(`spawned editor process to edit ${tempFilePath}`);
-
-        // Wait for the editor to close
-        await process.exited;
+        // Spawn the editor process using Node.js child_process
+        await new Promise<void>((resolve, reject) => {
+            const command = editorCommand[0] || "code";
+            const args = [...editorCommand.slice(1), tempFilePath];
+            const child = spawn(command, args, {
+                stdio: "inherit"
+            });
+            log(`spawned editor process to edit ${tempFilePath}`);
+            child.on("exit", (code: number | null) => {
+                if (code === 0) {
+                    resolve();
+                } else {
+                    reject(new Error(`Editor process exited with code ${code}`));
+                }
+            });
+            child.on("error", (err: Error) => reject(err));
+        });
 
         // Read the potentially modified content from the temp file
         let updatedTitle = title;

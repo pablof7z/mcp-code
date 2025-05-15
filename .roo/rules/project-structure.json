@@ -1,5 +1,5 @@
 {
-  "project_name": "MCP-Nostr",
+  "project_name": "tenex-tools",
   "description": "A bridge between the Model Context Protocol (MCP) and the Nostr network, enabling AI language models to publish content to Nostr and interact with the Nostr ecosystem.",
   "directory_structure": {
     "commands/": "Contains command-line interface (CLI) command definitions using 'commander'. Each file represents a command or a group of related commands (e.g., `find-snippets.ts`, `wot.ts`). These commands are entry points for user interaction.",
@@ -31,7 +31,7 @@
     "mcp_server_integration": "The application integrates as an MCP server, allowing AI agents and other MCP-compatible tools to interact with it. This integration is primarily managed in `commands/mcp.ts` and logic functions in `logic/`.",
     "nostr_ndk_integration": "NDK (@nostr-dev-kit/ndk) is the core library for interacting with the Nostr network. It handles event signing, publishing, subscription, and data retrieval. Integration is throughout the codebase, especially in `lib/nostr/` and `logic/`.",
     "sqlite_database": "Bun SQLite is used for local data persistence, storing user profiles, Web of Trust data, and potentially other application-specific data. Database setup and migrations are handled in `db.ts` and `migrations/`.",
-    "configuration_file": "`~/.mcp-nostr.json` stores application configuration, including user credentials, relay lists, and enabled MCP commands. Configuration is managed by `config.ts` and set up via `wizard.ts`.",
+    "configuration_file": "`~/.tenex-tools.json` stores application configuration, including user credentials, relay lists, and enabled MCP commands. Configuration is managed by `config.ts` and set up via `wizard.ts`.",
     "wizard_setup": "The `wizard.ts` module provides an interactive command-line wizard for first-time setup, guiding users through configuration and authentication setup."
   },
   "modularity_and_separation_of_concerns": "The codebase is designed with a strong emphasis on modularity and separation of concerns. This is achieved through:",
@@ -49,7 +49,6 @@
     "Model Context Protocol (MCP)": "Protocol for AI tool interaction",
     "Nostr": "Decentralized social network protocol",
     "@nostr-dev-kit/ndk": "Nostr Development Kit for JavaScript",
-    "@nostr-dev-kit/ndk-wallet": "NDK Wallet library for NIP-60 integration",
     "@modelcontextprotocol/sdk": "MCP SDK for JavaScript",
     "commander": "Node.js library for command-line interfaces",
     "inquirer": "Node.js library for interactive command-line prompts",
